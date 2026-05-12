@@ -166,6 +166,16 @@ class TestSettings:
         settings = Settings()
         assert settings.wafer_api_key == "wafer-key"
 
+    def test_custom_openai_settings_from_env(self, monkeypatch):
+        """CUSTOM_OPENAI_* env vars are loaded into settings."""
+        from config.settings import Settings
+
+        monkeypatch.setenv("CUSTOM_OPENAI_API_KEY", "custom-key")
+        monkeypatch.setenv("CUSTOM_OPENAI_BASE_URL", "https://proxy.example/v1")
+        settings = Settings()
+        assert settings.custom_openai_api_key == "custom-key"
+        assert settings.custom_openai_base_url == "https://proxy.example/v1"
+
     def test_per_model_thinking_from_env(self, monkeypatch):
         """Per-model thinking env vars are loaded into settings."""
         from config.settings import Settings
@@ -519,6 +529,7 @@ class TestPerModelMapping:
             ({"MODEL": "lmstudio/qwen2.5-7b"}, "lmstudio/qwen2.5-7b", None),
             ({"MODEL": "llamacpp/local-model"}, "llamacpp/local-model", None),
             ({"MODEL": "ollama/llama3.1"}, "ollama/llama3.1", None),
+            ({"MODEL": "custom_openai/gpt-4o-mini"}, "custom_openai/gpt-4o-mini", None),
         ],
     )
     def test_settings_models_from_env(
@@ -657,6 +668,9 @@ class TestPerModelMapping:
         assert Settings.parse_provider_type("llamacpp/model") == "llamacpp"
         assert Settings.parse_provider_type("ollama/llama3.1") == "ollama"
         assert Settings.parse_provider_type("wafer/DeepSeek-V4-Pro") == "wafer"
+        assert (
+            Settings.parse_provider_type("custom_openai/gpt-4o-mini") == "custom_openai"
+        )
 
     def test_parse_model_name(self):
         """parse_model_name extracts model name from model string."""
@@ -668,6 +682,7 @@ class TestPerModelMapping:
         assert Settings.parse_model_name("llamacpp/model") == "model"
         assert Settings.parse_model_name("ollama/llama3.1") == "llama3.1"
         assert Settings.parse_model_name("wafer/DeepSeek-V4-Pro") == "DeepSeek-V4-Pro"
+        assert Settings.parse_model_name("custom_openai/gpt-4o-mini") == "gpt-4o-mini"
 
     def test_configured_chat_model_refs_collects_unique_models_with_sources(
         self, monkeypatch

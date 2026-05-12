@@ -5,6 +5,7 @@ from pathlib import Path
 
 from messaging.platforms.factory import create_messaging_platform
 from providers.base import BaseProvider
+from providers.custom_openai import CustomOpenAIProvider
 from providers.deepseek import DeepSeekProvider
 from providers.llamacpp import LlamaCppProvider
 from providers.lmstudio import LMStudioProvider
@@ -75,6 +76,7 @@ def test_provider_and_platform_registries_include_advertised_builtins() -> None:
         "llamacpp": LlamaCppProvider,
         "ollama": OllamaProvider,
         "wafer": WaferProvider,
+        "custom_openai": CustomOpenAIProvider,
     }
     for provider_class in provider_classes.values():
         assert issubclass(provider_class, BaseProvider)

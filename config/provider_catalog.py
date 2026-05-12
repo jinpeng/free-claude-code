@@ -23,6 +23,7 @@ OPENROUTER_DEFAULT_BASE = "https://openrouter.ai/api/v1"
 LMSTUDIO_DEFAULT_BASE = "http://localhost:1234/v1"
 LLAMACPP_DEFAULT_BASE = "http://localhost:8080/v1"
 OLLAMA_DEFAULT_BASE = "http://localhost:11434"
+CUSTOM_OPENAI_DEFAULT_BASE = "https://api.openai.com/v1"
 
 
 @dataclass(frozen=True, slots=True)
@@ -123,6 +124,15 @@ PROVIDER_CATALOG: dict[str, ProviderDescriptor] = {
         default_base_url=WAFER_DEFAULT_BASE,
         proxy_attr="wafer_proxy",
         capabilities=("chat", "streaming", "tools", "thinking", "native_anthropic"),
+    ),
+    "custom_openai": ProviderDescriptor(
+        provider_id="custom_openai",
+        transport_type="openai_chat",
+        credential_attr="custom_openai_api_key",
+        default_base_url=CUSTOM_OPENAI_DEFAULT_BASE,
+        base_url_attr="custom_openai_base_url",
+        proxy_attr="custom_openai_proxy",
+        capabilities=("chat", "streaming", "tools"),
     ),
 }
 

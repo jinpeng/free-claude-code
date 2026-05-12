@@ -6,6 +6,7 @@ import pytest
 
 from config.nim import NimSettings
 from config.provider_ids import SUPPORTED_PROVIDER_IDS
+from providers.custom_openai import CustomOpenAIProvider
 from providers.deepseek import DeepSeekProvider
 from providers.exceptions import UnknownProviderTypeError
 from providers.llamacpp import LlamaCppProvider
@@ -29,6 +30,8 @@ def _make_settings(**overrides):
     mock.open_router_api_key = "test_openrouter_key"
     mock.deepseek_api_key = "test_deepseek_key"
     mock.wafer_api_key = "test_wafer_key"
+    mock.custom_openai_api_key = "custom-key"
+    mock.custom_openai_base_url = "https://custom.example/v1"
     mock.lm_studio_base_url = "http://localhost:1234/v1"
     mock.llamacpp_base_url = "http://localhost:8080/v1"
     mock.ollama_base_url = "http://localhost:11434"
@@ -38,6 +41,7 @@ def _make_settings(**overrides):
     mock.llamacpp_proxy = ""
     mock.kimi_proxy = ""
     mock.wafer_proxy = ""
+    mock.custom_openai_proxy = ""
     mock.provider_rate_limit = 40
     mock.provider_rate_window = 60
     mock.provider_max_concurrency = 5
@@ -99,6 +103,7 @@ def test_create_provider_instantiates_each_builtin():
         "llamacpp": LlamaCppProvider,
         "ollama": OllamaProvider,
         "wafer": WaferProvider,
+        "custom_openai": CustomOpenAIProvider,
     }
 
     with (

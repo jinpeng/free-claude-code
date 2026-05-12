@@ -15,6 +15,7 @@ from api.dependencies import (
     resolve_provider,
 )
 from config.nim import NimSettings
+from providers.custom_openai import CustomOpenAIProvider
 from providers.deepseek import DeepSeekProvider
 from providers.exceptions import ServiceUnavailableError, UnknownProviderTypeError
 from providers.lmstudio import LMStudioProvider
@@ -37,12 +38,15 @@ def _make_mock_settings(**overrides):
     mock.open_router_api_key = "test_openrouter_key"
     mock.deepseek_api_key = "test_deepseek_key"
     mock.wafer_api_key = "test_wafer_key"
+    mock.custom_openai_api_key = "test_custom_openai_key"
+    mock.custom_openai_base_url = "https://custom-openai.example/v1"
     mock.lm_studio_base_url = "http://localhost:1234/v1"
     mock.ollama_base_url = "http://localhost:11434"
     mock.lmstudio_proxy = ""
     mock.llamacpp_proxy = ""
     mock.kimi_proxy = ""
     mock.wafer_proxy = ""
+    mock.custom_openai_proxy = ""
     mock.nim = NimSettings()
     mock.http_read_timeout = 300.0
     mock.http_write_timeout = 10.0
@@ -205,6 +209,19 @@ async def test_get_provider_wafer():
         assert isinstance(provider, WaferProvider)
         assert provider._base_url == "https://pass.wafer.ai/v1"
         assert provider._api_key == "test_wafer_key"
+
+
+@pytest.mark.asyncio
+async def test_get_provider_custom_openai():
+    """Test that provider_type=custom_openai returns CustomOpenAIProvider."""
+    with patch("api.dependencies.get_settings") as mock_settings:
+        mock_settings.return_value = _make_mock_settings(provider_type="custom_openai")
+
+        provider = get_provider()
+
+        assert isinstance(provider, CustomOpenAIProvider)
+        assert provider._base_url == "https://custom-openai.example/v1"
+        assert provider._api_key == "test_custom_openai_key"
 
 
 @pytest.mark.asyncio

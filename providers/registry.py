@@ -80,6 +80,12 @@ def _create_wafer(config: ProviderConfig, _settings: Settings) -> BaseProvider:
     return WaferProvider(config)
 
 
+def _create_custom_openai(config: ProviderConfig, _settings: Settings) -> BaseProvider:
+    from providers.custom_openai import CustomOpenAIProvider
+
+    return CustomOpenAIProvider(config)
+
+
 PROVIDER_FACTORIES: dict[str, ProviderFactory] = {
     "nvidia_nim": _create_nvidia_nim,
     "open_router": _create_open_router,
@@ -89,6 +95,7 @@ PROVIDER_FACTORIES: dict[str, ProviderFactory] = {
     "ollama": _create_ollama,
     "kimi": _create_kimi,
     "wafer": _create_wafer,
+    "custom_openai": _create_custom_openai,
 }
 
 if set(PROVIDER_DESCRIPTORS) != set(SUPPORTED_PROVIDER_IDS) or set(

@@ -12,7 +12,7 @@ Use Claude Code CLI, VS Code, JetBrains ACP, or chat bots through your own Anthr
 [![Code style: Ruff](https://img.shields.io/badge/code%20formatting-ruff-f5a623.svg?style=for-the-badge)](https://github.com/astral-sh/ruff)
 [![Logging: Loguru](https://img.shields.io/badge/logging-loguru-4ecdc4.svg?style=for-the-badge)](https://github.com/Delgan/loguru)
 
-Free Claude Code routes Anthropic Messages API traffic from Claude Code to NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, or Ollama. It keeps Claude Code's client-side protocol stable while letting you choose free, paid, or local models.
+Free Claude Code routes Anthropic Messages API traffic from Claude Code to NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, Ollama, or a generic OpenAI-compatible custom provider. It keeps Claude Code's client-side protocol stable while letting you choose free, paid, or local models.
 
 [Quick Start](#quick-start) · [Providers](#choose-a-provider) · [Clients](#connect-claude-code) · [Configuration](#configuration-reference) · [Development](#development)
 
@@ -37,7 +37,7 @@ Free Claude Code routes Anthropic Messages API traffic from Claude Code to NVIDI
 ## What You Get
 
 - Drop-in proxy for Claude Code's Anthropic API calls.
-- Eight provider backends: NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, and Ollama.
+- Nine provider backends: NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, Ollama, and a generic OpenAI-compatible custom provider.
 - Per-model routing: send Opus, Sonnet, Haiku, and fallback traffic to different providers.
 - Native Claude Code `/model` picker support through the proxy's `/v1/models` endpoint (Claude Code must opt in to Gateway model discovery; see [Model Picker](#model-picker)).
 - Streaming, tool use, reasoning/thinking block handling, and local request optimizations.
@@ -208,7 +208,17 @@ In the Admin UI, keep or update `OLLAMA_BASE_URL`, then set `MODEL` to the same 
 
 `OLLAMA_BASE_URL` is the Ollama server root; do not append `/v1`. Example model slugs include `ollama/llama3.1` and `ollama/llama3.1:8b`.
 
-### 9. Mix Providers By Model Tier
+### 9. Generic OpenAI-Compatible Custom Provider
+
+If your upstream gateway speaks OpenAI-compatible `/chat/completions`, set `CUSTOM_OPENAI_BASE_URL` and optionally `CUSTOM_OPENAI_API_KEY`, then use a `custom_openai/...` model slug.
+
+For example:
+
+- `CUSTOM_OPENAI_BASE_URL="https://your-gateway.example/v1"`
+- `CUSTOM_OPENAI_API_KEY="optional-key"`
+- `MODEL="custom_openai/gpt-4o-mini"`
+
+### 10. Mix Providers By Model Tier
 
 Each model tier can use a different provider by setting `MODEL_OPUS`, `MODEL_SONNET`, and `MODEL_HAIKU` in the Admin UI. Leave a tier blank to inherit `MODEL`.
 
@@ -364,6 +374,8 @@ NVIDIA_NIM_API_KEY=""
 OPENROUTER_API_KEY=""
 DEEPSEEK_API_KEY=""
 WAFER_API_KEY=""
+CUSTOM_OPENAI_API_KEY=""
+CUSTOM_OPENAI_BASE_URL="https://api.openai.com/v1"
 LM_STUDIO_BASE_URL="http://localhost:1234/v1"
 LLAMACPP_BASE_URL="http://localhost:8080/v1"
 OLLAMA_BASE_URL="http://localhost:11434"
@@ -377,6 +389,7 @@ OPENROUTER_PROXY=""
 LMSTUDIO_PROXY=""
 LLAMACPP_PROXY=""
 WAFER_PROXY=""
+CUSTOM_OPENAI_PROXY=""
 ```
 
 ### 4. Rate Limits And Timeouts

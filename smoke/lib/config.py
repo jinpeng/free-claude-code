@@ -49,6 +49,7 @@ PROVIDER_SMOKE_DEFAULT_MODELS: dict[str, str] = {
     "llamacpp": "llamacpp/local-model",
     "ollama": "ollama/llama3.1",
     "wafer": "wafer/DeepSeek-V4-Pro",
+    "custom_openai": "custom_openai/gpt-4o-mini",
 }
 
 NVIDIA_NIM_CLI_DEFAULT_MODELS: tuple[str, ...] = (
@@ -231,6 +232,8 @@ class SmokeConfig:
             return bool(self.settings.ollama_base_url.strip())
         if provider == "wafer":
             return bool(self.settings.wafer_api_key.strip())
+        if provider == "custom_openai":
+            return bool(self.settings.custom_openai_base_url.strip())
         return False
 
 
